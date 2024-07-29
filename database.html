@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Database System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #feb703, #feb703);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        header h1 {
+            margin: 0;
+            color: #333;
+        }
+
+        .container, .login-container {
+            margin-top: 80px;
+            width: 90%;
+            max-width: 1200px;
+            background: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 30px 10px;
+            color: #fff;
+            background: #feb703;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2em;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, button:hover {
+            border-color: orange;
+        }
+
+        button {
+            background-color: orange;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+        }
+
+        .results, .saved-info {
+            width: 100%;
+            max-width: 1000px;
+            margin-top: 20px;
+        }
+
+        .result-item, .saved-item {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .saved-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .saved-item {
+            width: 70%;
+            box-sizing: border-box;
+            background: #f9f9f9;
+        }
+
+        .saved-item img {
+            max-width: 100%;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .saved-item p {
+            padding: 10px;
+            margin: 0;
+        }
+
+        .saved-info.hidden, .results.hidden {
+            display: none;
+        }
+
+        .delete-button {
+            top: 10px;
+            right: 10px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        footer {
+            margin-top: 40px;
+            padding: 20px;
+            background: #fff;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        footer p {
+            margin: 0;
+            color: #333;
+        }
+
+        .login-container input, .login-container button {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .login-container button {
+            background-color: orange;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .login-container button:hover {
+            background-color: #ff9800;
+        }
+
+        .message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Information Database System</h1>
+    </header>
+
+    <!-- Login Section -->
+    <div class="login-container" id="loginSection">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Username" />
+        <input type="password" id="password" placeholder="Password" />
+        <button onclick="login()">Login</button>
+        <p id="message" class="message"></p>
+    </div>
+
+    <!-- App Section -->
+    <div class="container" id="appSection" style="display: none;">
+        <section class="hero">
+            <h3>Welcome back to your System</h3>
+            <p>Manage and search person information with ease. Add new entries, upload images, and search through the database.</p>
+        </section>
+        <div class="form-container">
+            <h2>Add Person Information</h2>
+            <input type="text" id="name" placeholder="Name" />
+            <input type="text" id="phone" placeholder="Phone Number" />
+            <input type="text" id="location" placeholder="Location" />
+            <input type="text" id="email" placeholder="Email" />
+            <input type="text" id="occupation" placeholder="Occupation" />
+            <textarea id="note" placeholder="Add a note (optional)"></textarea>
+            <input type="file" id="image" />
+            <button onclick="addPerson()">Add Person</button>
+            <p id="addMessage" style="color: green;"></p>
+        </div>
+        
+        <div class="form-container">
+            <h2>Search Person</h2>
+            <input type="text" id="search" placeholder="Search by name or phone number" />
+            <button onclick="toggleSearchResults()">Search</button>
+            <div id="results" class="results hidden"></div>
+        </div>
+        <div class="form-container">
+            <h2>Saved Information</h2>
+            <button onclick="toggleSavedInfo()">Show Saved Information</button>
+            <button onclick="deleteAllSaved()">Delete All Saved Information</button>
+            <div id="savedInfo" class="saved-info hidden"></div>
+        </div>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Advanced Database System. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const users = [
+            { username: 'roseberry@database.com', password: 'blueberry' },
+            { username: 'blackcoffee@database.com', password: 'capochino' },
+            { username: 'sweetymilk@database.com', password: 'Kddmilk' }
+        ];
+
+        const people = JSON.parse(localStorage.getItem('people')) || [];
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const message = document.getElementById('message');
+
+            const user = users.find(user => user.username === username && user.password === password);
+
+            if (user) {
+                message.textContent = 'Login successful!';
+                message.style.color = 'green';
+                // Show the app section and hide the login section
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('appSection').style.display = 'flex';
+            } else {
+                message.textContent = 'Invalid username or password.';
+                message.style.color = 'red';
+            }
+        }
+
+        function addPerson() {
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const location = document.getElementById('location').value;
+            const email = document.getElementById('email').value;
+            const occupation = document.getElementById('occupation').value;
+            const image = document.getElementById('image').files[0];
+            const note = document.getElementById('note').value;
+
+            if (name && phone && location && email && occupation) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const newPerson = {
+                        name,
+                        phone,
+                        location,
+                        email,
+                        occupation,
+                        image: e.target.result,
+                        note // Include note here
+                    };
+                    people.push(newPerson);
+                    localStorage.setItem('people', JSON.stringify(people));
+                    displaySavedInfo();
+                    document.getElementById('addMessage').textContent = 'Person added successfully!';
+                    document.getElementById('name').value = '';
+                    document.getElementById('phone').value = '';
+                    document.getElementById('location').value = '';
+                    document.getElementById('email').value = '';
+                    document.getElementById('occupation').value = '';
+                    document.getElementById('image').value = '';
+                    document.getElementById('note').value = '';
+                };
+                if (image) {
+                    reader.readAsDataURL(image);
+                } else {
+                    const newPerson = {
+                        name,
+                        phone,
+                        location,
+                        email,
+                        occupation,
+                        image: '',
+                        note // Include note here
+                    };
+                    people.push(newPerson);
+                    localStorage.setItem('people', JSON.stringify(people));
+                    displaySavedInfo();
+                    document.getElementById('addMessage').textContent = 'Person added successfully!';
+                    document.getElementById('name').value = '';
+                    document.getElementById('phone').value = '';
+                    document.getElementById('location').value = '';
+                    document.getElementById('email').value = '';
+                    document.getElementById('occupation').value = '';
+                    document.getElementById('note').value = '';
+                }
+            } else {
+                document.getElementById('addMessage').textContent = 'Please fill out all fields.';
+            }
+        }
+
+        function displaySavedInfo() {
+            const savedInfoDiv = document.getElementById('savedInfo');
+            savedInfoDiv.innerHTML = '';
+
+            people.forEach((person, index) => {
+                savedInfoDiv.innerHTML += `
+                    <div class="saved-item">
+                        ${person.image ? `<img src="${person.image}" class="image-preview" />` : ''}
+                        <p><strong>Name:</strong> ${person.name}</p>
+                        <p><strong>Phone:</strong> ${person.phone}</p>
+                        <p><strong>Location:</strong> ${person.location}</p>
+                        <p><strong>Email:</strong> ${person.email}</p>
+                        <p><strong>Occupation:</strong> ${person.occupation}</p>
+                        <p><strong>Note:</strong> ${person.note}</p> <!-- Display note -->
+                        <button class="delete-button" onclick="deletePerson(${index})">Delete</button>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleSavedInfo() {
+            const savedInfoDiv = document.getElementById('savedInfo');
+            if (savedInfoDiv.classList.contains('hidden')) {
+                savedInfoDiv.classList.remove('hidden');
+                displaySavedInfo();
+            } else {
+                savedInfoDiv.classList.add('hidden');
+            }
+        }
+
+        function deletePerson(index) {
+            people.splice(index, 1);
+            localStorage.setItem('people', JSON.stringify(people));
+            displaySavedInfo();
+        }
+
+        function deleteAllSaved() {
+            if (confirm('Are you sure you want to delete all saved information?')) {
+                localStorage.removeItem('people');
+                people.length = 0;
+                displaySavedInfo();
+            }
+        }
+
+        function toggleSearchResults() {
+            const searchQuery = document.getElementById('search').value.toLowerCase();
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+
+            const filteredPeople = people.filter(person => 
+                person.name.toLowerCase().includes(searchQuery) || 
+                person.phone.toLowerCase().includes(searchQuery)
+            );
+
+            if (filteredPeople.length > 0) {
+                filteredPeople.forEach(person => {
+                    resultsDiv.innerHTML += `
+                        <div class="result-item">
+                            ${person.image ? `<img src="${person.image}" class="image-preview" />` : ''}
+                            <p><strong>Name:</strong> ${person.name}</p>
+                            <p><strong>Phone:</strong> ${person.phone}</p>
+                            <p><strong>Location:</strong> ${person.location}</p>
+                            <p><strong>Email:</strong> ${person.email}</p>
+                            <p><strong>Occupation:</strong> ${person.occupation}</p>
+                            <p><strong>Note:</strong> ${person.note}</p>
+                        </div>
+                    `;
+                });
+                resultsDiv.classList.remove('hidden');
+            } else {
+                resultsDiv.innerHTML = '<p>No results found.</p>';
+                resultsDiv.classList.remove('hidden');
+            }
+        }
+
+        function logout() {
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('appSection').style.display = 'none';
+        }
+
+        // Initial display of saved information if any
+        displaySavedInfo();
+    </script>
+</body>
+</html>
